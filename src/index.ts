@@ -38,30 +38,14 @@ enum ServiceLifetime {
   SINGLETON,
 }
 
-const forbiddenConstructors = [
-  String.name,
-  Number.name,
-  BigInt.name,
-  Boolean.name,
-  Symbol.name,
-];
-
 class ServiceResolver implements IDisposable {
   private lastValue: any;
 
   constructor(
-    private container: IServiceContainer,
+    private container: ServiceContainer,
     private serviceCtr: Constructor<any>,
     private lifetime: ServiceLifetime
   ) {}
-
-  checkSafetyOfToken<T>(token: Constructor<T>): Constructor<T> {
-    // this will catch native types while the container will catch anything else
-    if (forbiddenConstructors.indexOf(token.name) > -1) {
-      throw new Error('Cannot use a native type as an injected value');
-    }
-    return token;
-  }
 
   resolve<T>(): T {
     if (
@@ -71,23 +55,20 @@ class ServiceResolver implements IDisposable {
       return this.lastValue;
     }
     const tokens =
-      Reflect.getMetadata('design:paramtypes', this.serviceCtr) || [];
-    const injections = tokens.map((token: any) =>
-      this.container.getService(this.checkSafetyOfToken(token))
-    );
+      (Reflect.getMetadata(
+        'design:paramtypes',
+        this.serviceCtr
+      ) as Constructor<any>[]) || [];
+    const injections = tokens
+      .filter((token) => this.container.isServiceRegistered(token))
+      .map((token) => this.container.getService(token));
     const resolved = new this.serviceCtr(...injections) as T;
     this.lastValue = resolved;
     return resolved;
   }
 
   dispose() {
-    if (typeof this.lastValue === 'undefined') {
-      return;
-    }
-    if ('dispose' in this.lastValue) {
-      // if it implements IDisposable or has it without implementing the class, call it
-      this.lastValue.dispose();
-    }
+    this.lastValue?.dispose?.();
   }
 }
 
@@ -112,7 +93,6 @@ export class ServiceContainer implements IServiceContainer {
     return this.addService(ctor, ServiceLifetime.SINGLETON);
   }
   getService<T>(ctor: Constructor<T>): T {
-    console.log(`getting dependency ${ctor.name}`);
     if (this.registeredServices.has(ctor.name)) {
       const resolver = this.registeredServices.get(ctor.name);
       return resolver!.resolve<T>();
@@ -126,5 +106,9 @@ export class ServiceContainer implements IServiceContainer {
       const resolver = this.registeredServices.get(ctor.name)!;
       resolver.dispose();
     }
+  }
+
+  isServiceRegistered<T>(ctor: Constructor<T>) {
+    return this.registeredServices.has(ctor.name);
   }
 }
