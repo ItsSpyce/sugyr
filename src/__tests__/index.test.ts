@@ -66,4 +66,15 @@ describe('services-container', () => {
     container.collectSingleton(SingletonService);
     expect(disposeFn).toBeCalledTimes(1);
   });
+
+  it('sets undefined when the dependency service is not registered', () => {
+    @Service()
+    class NonServiceReferer {
+      constructor(public s: string) {}
+    }
+    const container = new ServiceContainer();
+    container.addScoped(NonServiceReferer);
+    const ref = container.getService(NonServiceReferer);
+    expect(ref.s).toBeUndefined();
+  });
 });
