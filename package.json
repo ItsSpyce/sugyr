@@ -1,0 +1,23 @@
+{
+  "name": "@spyce/sugyr",
+  "version": "1.0.0",
+  "description": "A dependency injection library",
+  "main": "build/index.js",
+  "module": "src/index.ts",
+  "author": "spyce",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "test": "jest",
+    "build": "tsc --declaration src/index.ts --target ES5 --outDir dist"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "jest": "^27.1.0",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.2"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  }
+}
