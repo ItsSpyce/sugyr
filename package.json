@@ -11,7 +11,8 @@
     "test": "jest",
     "build:ts": "tsc --declaration src/index.ts --target ES5 --outDir dist",
     "build:minify": "uglifyjs --compress --mangle --no-annotations --output ./dist/index.min.js -- ./dist/index.js",
-    "build": "cross-env \"yarn build:ts && yarn build:minify\""
+    "build": "cross-env \"yarn build:ts && yarn build:minify\"",
+    "ci": "yarn && yarn build"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
