@@ -1,18 +1,20 @@
 {
   "name": "sugyr",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "A dependency injection library",
-  "main": "build/index.min.js",
+  "main": "dist/index.min.js",
   "module": "src/index.ts",
   "author": "spyce",
   "license": "MIT",
   "private": false,
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "build:ts": "tsc --declaration src/index.ts --target ES5 --outDir dist",
     "build:minify": "uglifyjs --compress --mangle --no-annotations --output ./dist/index.min.js -- ./dist/index.js",
     "build": "cross-env \"yarn build:ts && yarn build:minify\"",
-    "ci": "yarn && yarn build"
+    "ci": "yarn && yarn build",
+    "prepublish": "yarn build"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
