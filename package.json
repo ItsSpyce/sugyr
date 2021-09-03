@@ -1,6 +1,6 @@
 {
   "name": "sugyr",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A dependency injection library",
   "main": "dist/index.min.js",
   "module": "src/index.ts",
@@ -8,6 +8,8 @@
   "license": "MIT",
   "private": false,
   "types": "./dist/index.d.ts",
+  "repository": "https://github.com/ItsSpyce/sugyr",
+  "url": "https://github.com/ItsSpyce/sugyr",
   "scripts": {
     "test": "jest",
     "build:ts": "tsc --declaration src/index.ts --target ES5 --outDir dist",
